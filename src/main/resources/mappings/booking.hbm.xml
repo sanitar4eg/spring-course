@@ -10,14 +10,14 @@
   "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="beans.models">
+<hibernate-mapping package="edu.learn.beans.models">
 
 	<class name="Booking" table="BOOKING">
 		<id column="ID" name="id">
 			<generator class="identity"/>
 		</id>
-		<many-to-one class="beans.models.User" column="USER" fetch="join" lazy="false" name="user"/>
-		<many-to-one class="beans.models.Ticket" column="TICKET" fetch="join" lazy="false" name="ticket"/>
+		<many-to-one class="edu.learn.beans.models.User" column="USER" fetch="join" lazy="false" name="user"/>
+		<many-to-one class="edu.learn.beans.models.Ticket" column="TICKET" fetch="join" lazy="false" name="ticket"/>
 	</class>
 
 </hibernate-mapping>
