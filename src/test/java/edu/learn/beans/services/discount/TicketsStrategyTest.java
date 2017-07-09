@@ -7,6 +7,8 @@ import edu.learn.beans.models.User;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,6 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = edu.learn.beans.configuration.TestStrategiesConfiguration.class)
 public class TicketsStrategyTest {
 
+	public static final Logger LOG = LoggerFactory.getLogger(TicketsStrategyTest.class);
+
 	@Autowired
 	private TicketsStrategy strategy;
 
@@ -26,7 +30,7 @@ public class TicketsStrategyTest {
 
 	@org.junit.Test
 	public void testCalculateDiscount_UserHasDiscount() throws Exception {
-		System.out.println(strategy.getClass());
+		LOG.info(strategy.getClass().getName());
 		User userWithDiscount = new User("test@ema.il", bookingDAODiscountMock.userThatBookedTickets, LocalDate.now());
 		double discount = strategy.calculateDiscount(userWithDiscount);
 		assertEquals("User: [" + userWithDiscount + "] has tickets discount", strategy.ticketsDiscountValue, discount,

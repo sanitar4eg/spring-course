@@ -9,6 +9,8 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Repository;
 @Repository(value = "eventDAO")
 public class EventDAOImpl extends AbstractDAO implements EventDAO {
 
+	public static final Logger LOG = LoggerFactory.getLogger(EventDAOImpl.class);
+
 	@Override
 	public Event create(Event event) {
-		System.out.println("Creating " + event);
+		LOG.info("Creating " + event);
 		EventDAO.validateEvent(event);
 		List<Event> byAuditoriumAndDate = getByAuditoriumAndDate(event.getAuditorium(), event.getDateTime());
 		if (byAuditoriumAndDate.size() > 0) {

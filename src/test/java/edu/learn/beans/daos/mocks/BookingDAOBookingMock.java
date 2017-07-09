@@ -5,11 +5,15 @@ import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 3:08 AM
  */
 public class BookingDAOBookingMock extends BookingDAOImpl {
+
+	public static final Logger LOG = LoggerFactory.getLogger(BookingDAOBookingMock.class);
 
 	private final Map<User, Set<Ticket>> initWith;
 
@@ -19,7 +23,7 @@ public class BookingDAOBookingMock extends BookingDAOImpl {
 
 	public void init() {
 		cleanup();
-		System.out.println("creating " + initWith);
+		LOG.info("creating " + initWith);
 		initWith.forEach((user, tickets) -> tickets.forEach(ticket -> create(user, ticket)));
 	}
 

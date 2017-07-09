@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @PropertySource({"classpath:strategies/booking.properties"})
 @Transactional
 public class BookingServiceImpl implements BookingService {
+
+	public static final Logger LOG = LoggerFactory.getLogger(BookingServiceImpl.class);
 
 	final int minSeatNumber;
 	final double vipSeatPriceMultiplier;
@@ -99,16 +103,16 @@ public class BookingServiceImpl implements BookingService {
 		final double simpleSeatsPrice = simpleSeats.size() * seatPrice;
 		final double vipSeatsPrice = vipSeats.size() * vipSeatPrice;
 
-		//        System.out.println("auditoriumVipSeats = " + auditoriumVipSeats);
-		//        System.out.println("baseSeatPrice = " + baseSeatPrice);
-		//        System.out.println("rateMultiplier = " + rateMultiplier);
-		//        System.out.println("vipSeatPriceMultiplier = " + vipSeatPriceMultiplier);
-		//        System.out.println("seatPrice = " + seatPrice);
-		//        System.out.println("vipSeatPrice = " + vipSeatPrice);
-		//        System.out.println("discount = " + discount);
-		//        System.out.println("seats = " + seats);
-		//        System.out.println("simpleSeats.size() = " + simpleSeats.size());
-		//        System.out.println("vipSeats.size() = " + vipSeats.size());
+		//        LOG.info("auditoriumVipSeats = " + auditoriumVipSeats);
+		//        LOG.info("baseSeatPrice = " + baseSeatPrice);
+		//        LOG.info("rateMultiplier = " + rateMultiplier);
+		//        LOG.info("vipSeatPriceMultiplier = " + vipSeatPriceMultiplier);
+		//        LOG.info("seatPrice = " + seatPrice);
+		//        LOG.info("vipSeatPrice = " + vipSeatPrice);
+		//        LOG.info("discount = " + discount);
+		//        LOG.info("seats = " + seats);
+		//        LOG.info("simpleSeats.size() = " + simpleSeats.size());
+		//        LOG.info("vipSeats.size() = " + vipSeats.size());
 
 		final double totalPrice = simpleSeatsPrice + vipSeatsPrice;
 

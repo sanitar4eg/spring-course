@@ -21,6 +21,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 	TestEventServiceConfiguration.class})
 @Transactional
 public class EventServiceImplTest {
+
+	public static final Logger LOG = LoggerFactory.getLogger(EventServiceImplTest.class);
 
 	private final Event testEvent = new Event(UUID.randomUUID().toString(), Rate.HIGH, 1321, LocalDateTime.now(),
 		null);
@@ -57,17 +61,17 @@ public class EventServiceImplTest {
 
 	@Before
 	public void init() {
-		System.out.println("!!!");
+		LOG.info("!!!");
 		testEvent.setAuditorium(auditorium);
 		eventDAOMock.init();
-		System.out.println("$$$");
+		LOG.info("$$$");
 	}
 
 	@After
 	public void clean() {
-		System.out.println("***");
+		LOG.info("***");
 		eventDAOMock.cleanup();
-		System.out.println("###");
+		LOG.info("###");
 	}
 
 	@Test
@@ -104,7 +108,7 @@ public class EventServiceImplTest {
 		Event event2 = (Event) applicationContext.getBean("testEvent2");
 		Event event3 = (Event) applicationContext.getBean("testEvent3");
 		List<Event> expected = Arrays.asList(getEvent(event1), getEvent(event2), getEvent(event3));
-		System.out.println(all);
+		LOG.info(all.toString());
 		assertTrue("List of events should match", expected.containsAll(all));
 		assertTrue("List of events should match", all.containsAll(expected));
 	}
@@ -145,11 +149,11 @@ public class EventServiceImplTest {
 
 	@Test
 	public void testAssignAuditorium_createNew() throws Exception {
-		System.out.println("auditorium = " + auditorium);
-		System.out.println("auditorium2 = " + auditorium2);
+		LOG.info("auditorium = " + auditorium);
+		LOG.info("auditorium2 = " + auditorium2);
 		List<Event> before = eventService.getAll();
 		Event event = eventService.create(testEvent);
-		System.out.println("event = " + event);
+		LOG.info("event = " + event);
 		eventService.assignAuditorium(event, auditorium2, event.getDateTime());
 		List<Event> after = eventService.getAll();
 		before.add(testEvent);
@@ -167,8 +171,8 @@ public class EventServiceImplTest {
 		before.remove(event);
 		before.add(new Event(event.getId(), event.getName(), event.getRate(), event.getBasePrice(),
 			testEvent.getDateTime(), testEvent.getAuditorium()));
-		System.out.println("before = " + before);
-		System.out.println("after = " + after);
+		LOG.info("before = " + before);
+		LOG.info("after = " + after);
 		assertTrue("Events should match", before.containsAll(after));
 		assertTrue("Events should match", after.containsAll(before));
 	}

@@ -20,11 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ApplicationStartup {
+
+	public static final Logger LOG = LoggerFactory.getLogger(ApplicationStartup.class);
 
 	private final AuditoriumService auditoriumService;
 	private final BookingService bookingService;
@@ -58,19 +62,15 @@ public class ApplicationStartup {
 		userService.register(new User("laory@yandex.ru", name, LocalDate.of(1992, 4, 29)));
 
 		User userByEmail = userService.getUserByEmail(email);
-		System.out.println("User with email: [" + email + "] is " + userByEmail);
-		System.out.println();
+		LOG.info("User with email: [" + email + "] is " + userByEmail);
 
-		System.out.println("All users with name: [" + name + "] are: ");
-		userService.getUsersByName(name).forEach(System.out::println);
-		System.out.println();
+		LOG.info("All users with name: [" + name + "] are: ");
+		userService.getUsersByName(name).stream().map(User::toString).forEach(LOG::info);
 
 		Event event1 = eventService.create(
 			new Event(eventName, Rate.HIGH, 60, LocalDateTime.of(LocalDate.of(2016, 2, 5), LocalTime.of(9, 0, 0)),
 				blueHall));
-		System.out.println();
-		System.out.println("Event by name: " + eventService.getByName(event1.getName()));
-		System.out.println();
+		LOG.info("Event by name: " + eventService.getByName(event1.getName()));
 		eventService.create(new Event(eventName, Rate.HIGH, 60, dateOfEvent, blueHall));
 		Event event2 = eventService.create(
 			new Event(eventName, Rate.HIGH, 60, LocalDateTime.of(LocalDate.of(2016, 2, 5), LocalTime.of(21, 18, 0)),
@@ -82,26 +82,23 @@ public class ApplicationStartup {
 			LocalDateTime.of(LocalDate.of(2016, 2, 5), LocalTime.of(21, 18, 0)), yellowHall);
 		event = eventService.create(event);
 
-		System.out.println("List of all events:");
-		eventService.getAll().forEach(System.out::println);
-		System.out.println();
+		LOG.info("List of all events:");
+		eventService.getAll().stream().map(Event::toString).forEach(LOG::info);
 
-		System.out.println(
+		LOG.info(
 			"Discount for user: [" + email + "] for event: [" + eventName + "] in auditorium: [" + auditoriumName +
 				"] on date: [" + dateOfEvent + "] is [" +
 				discountService.getDiscount(userByEmail, eventService.getEvent(eventName, blueHall, dateOfEvent))
 				+ "]");
-		System.out.println();
 
 		eventService.remove(event2);
-		System.out.println("List of all events:");
-		eventService.getAll().forEach(System.out::println);
-		System.out.println();
+		LOG.info("List of all events:");
+		eventService.getAll().stream().map(Event::toString).forEach(LOG::info);
 
 		List<Integer> seats = Arrays.asList(23, 24, 25, 26);
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), seats, userByEmail);
-		System.out.println("Price for event: [" + event + "], seats: [" + seats + "], user: [" + userByEmail + "] = "
+		LOG.info("Price for event: [" + event + "], seats: [" + seats + "], user: [" + userByEmail + "] = "
 			+ ticketPrice);
 
 		List<Integer> seats2 = Arrays.asList(27, 28, 29, 30);
@@ -118,15 +115,13 @@ public class ApplicationStartup {
 				event.getDateTime(), seats3,
 				userByEmail)));
 
-		System.out.println();
-		System.out.println("Tickets booked for event: [" + event + "]");
+		LOG.info("Tickets booked for event: [" + event + "]");
 		List<Ticket> ticketsForEvent = bookingService.getTicketsForEvent(event.getName(),
 			event.getAuditorium().getName(),
 			event.getDateTime());
 		IntStream.range(0, ticketsForEvent.size()).forEach(
-			i -> System.out.println("" + i + ") " + ticketsForEvent.get(i)));
+			i -> LOG.info("" + i + ") " + ticketsForEvent.get(i)));
 
-		System.out.println();
 		eventService.getByName("testName1");
 		eventService.getByName("testName2");
 		eventService.getByName("testName2");
@@ -139,12 +134,10 @@ public class ApplicationStartup {
 		bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(), event.getDateTime(), seats,
 			userByEmail);
 
-		System.out.println("CounterAspect.getAccessByNameStat() = " + CounterAspect.getAccessByNameStat());
-		System.out.println("CounterAspect.getGetPriceByNameStat() = " + CounterAspect.getGetPriceByNameStat());
-		System.out.println("CounterAspect.getBookTicketByNameStat() = " + CounterAspect.getBookTicketByNameStat());
-		System.out.println();
-		System.out.println("DiscountAspect.getDiscountStatistics() = " + DiscountAspect.getDiscountStatistics());
-		System.out.println();
-		System.out.println("LuckyWinnerAspect.getLuckyUsers() = " + LuckyWinnerAspect.getLuckyUsers());
+		LOG.info("CounterAspect.getAccessByNameStat() = " + CounterAspect.getAccessByNameStat());
+		LOG.info("CounterAspect.getGetPriceByNameStat() = " + CounterAspect.getGetPriceByNameStat());
+		LOG.info("CounterAspect.getBookTicketByNameStat() = " + CounterAspect.getBookTicketByNameStat());
+		LOG.info("DiscountAspect.getDiscountStatistics() = " + DiscountAspect.getDiscountStatistics());
+		LOG.info("LuckyWinnerAspect.getLuckyUsers() = " + LuckyWinnerAspect.getLuckyUsers());
 	}
 }
