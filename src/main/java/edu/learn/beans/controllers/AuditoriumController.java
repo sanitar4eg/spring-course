@@ -25,7 +25,7 @@ public class AuditoriumController {
 		return auditoriumService.getAuditoriums();
 	}
 
-	@RequestMapping(value = "byName", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, params = "name")
 	public Auditorium getByName(@RequestParam String name) {
 		return auditoriumService.getByName(name);
 	}
