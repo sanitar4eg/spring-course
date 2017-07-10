@@ -14,7 +14,7 @@
 	<tr>
 		<th>ID</th>
 		<th>Time</th>
-		<th>seats</th>
+	  <th>Seats</th>
 		<th>User email</th>
 		<th>Price</th>
 	</tr>
@@ -29,6 +29,9 @@
 </#list>
 </table>
 
+<#--TODO: Add header with "Accept=application/pdf" to request-->
+<a href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">Get as PDF</a>
+<p>
 
 <a href="javascript:history.back()">Go Back</a>
 </body>
