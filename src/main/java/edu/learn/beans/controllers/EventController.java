@@ -52,7 +52,7 @@ public class EventController {
 		return eventService.getNextEvents(to);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.POST)
 	public List<Integer> create(@RequestParam String name) {
 //		TODO: Implement
 		return null;

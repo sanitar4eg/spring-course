@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("auditorium")
 public class AuditoriumController {
 
-	final AuditoriumService auditoriumService;
+	private final AuditoriumService auditoriumService;
 
 	@Autowired
 	public AuditoriumController(AuditoriumService auditoriumService) {

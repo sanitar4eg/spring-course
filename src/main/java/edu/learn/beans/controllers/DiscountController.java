@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("discount")
 public class DiscountController {
 
-	final DiscountService discountService;
+	private final DiscountService discountService;
 
 	@Autowired
 	public DiscountController(DiscountService discountService) {

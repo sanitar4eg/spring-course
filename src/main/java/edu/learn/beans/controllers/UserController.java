@@ -36,7 +36,7 @@ public class UserController {
 		return userService.getUsersByName(name);
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.POST)
 	public List<Event> register() {
 //		return userService.register();
 //		TODO: Implement
