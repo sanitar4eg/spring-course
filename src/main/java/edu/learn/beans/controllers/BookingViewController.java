@@ -53,6 +53,7 @@ public class BookingViewController {
 		model.put("event", ticket.getEvent());
 		model.put("auditorium", ticket.getEvent().getAuditorium());
 
+//		Example request: http://localhost:8080/view/booking?event=The%20revenant&auditorium=Yellow%20hall&date=2016-02-05T21%3A18
 		return new ModelAndView("pdfTicketsView", model);
 	}
 

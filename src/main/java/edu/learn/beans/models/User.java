@@ -1,5 +1,9 @@
 package edu.learn.beans.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.learn.util.LocalDateDeserializer;
+import edu.learn.util.LocalDateSerializer;
 import java.time.LocalDate;
 
 /**
@@ -10,6 +14,8 @@ public class User {
 	private long id;
 	private String email;
 	private String name;
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonSerialize(using = LocalDateSerializer.class)
 	private LocalDate birthday;
 
 	public User() {

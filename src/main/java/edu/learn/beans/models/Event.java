@@ -1,5 +1,9 @@
 package edu.learn.beans.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.learn.util.LocalDateTimeDeserializer;
+import edu.learn.util.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 
 /**
@@ -11,6 +15,8 @@ public class Event {
 	private String name;
 	private Rate rate;
 	private double basePrice;
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime dateTime;
 	private Auditorium auditorium;
 

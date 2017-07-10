@@ -1,0 +1,14 @@
+[
+	{
+		"id": 10,
+		"email": "denis.mezhuev@gmail.com",
+		"name": "Denis Mezhuev",
+		"birthday": "2017-07-11"
+	},
+	{
+		"id": 11,
+		"email": "mick.jagger@gmail.com",
+		"name": "Mick Jagger",
+		"birthday": "2017-07-11"
+	}
+]
