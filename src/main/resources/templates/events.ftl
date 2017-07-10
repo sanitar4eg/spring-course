@@ -17,6 +17,7 @@
 		<th>Price</th>
 		<th>Time</th>
 		<th>Auditorium</th>
+	  <th>Tickets</th>
 	</tr>
 	</thead>
 <#list events as event>
@@ -27,6 +28,7 @@
 	<td>${event.basePrice}
 	<td>${event.dateTime}
 <td><a href="/view/auditorium/${event.auditorium.name}">${event.auditorium.name}</a>
+<td><a href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">View</a>
 </#list>
 </table>
 
