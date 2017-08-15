@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/4/2016 Time: 11:23 AM
- */
 @Service
 @Transactional
 public class DiscountServiceImpl implements DiscountService {

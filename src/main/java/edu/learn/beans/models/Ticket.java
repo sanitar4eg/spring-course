@@ -12,9 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:37 PM
- */
 @Entity
 public class Ticket {
 

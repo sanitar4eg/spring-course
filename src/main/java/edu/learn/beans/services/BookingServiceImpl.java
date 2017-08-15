@@ -21,9 +21,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/3/2016 Time: 11:33 AM
- */
 @Service("bookingServiceImpl")
 @PropertySource({"classpath:strategies/booking.properties"})
 @Transactional

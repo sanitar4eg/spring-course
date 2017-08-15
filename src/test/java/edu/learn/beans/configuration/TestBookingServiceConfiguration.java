@@ -29,9 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 13/2/16 Time: 3:36 PM
- */
 @Configuration
 public class TestBookingServiceConfiguration {
 

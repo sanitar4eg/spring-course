@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/11/2016 Time: 10:23 AM
- */
 @Aspect
 @Component
 @PropertySource({"classpath:aspects/aspects.properties"})

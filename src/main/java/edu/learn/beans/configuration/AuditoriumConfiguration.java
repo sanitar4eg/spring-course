@@ -8,9 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/12/2016 Time: 1:36 PM
- */
 @Configuration
 @PropertySource({"classpath:auditoriums/blueHall.properties", "classpath:auditoriums/redHall.properties",
 	"classpath:auditoriums/yellowHall.properties"})

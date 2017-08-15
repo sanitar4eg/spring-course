@@ -8,9 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:55 PM
- */
 @Entity
 public class Auditorium {
 

@@ -8,9 +8,6 @@ import java.util.Objects;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/2/2016 Time: 12:35 PM
- */
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 

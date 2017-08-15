@@ -14,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/11/2016 Time: 10:23 AM
- */
 @Aspect
 @Component
 public class DiscountAspect {

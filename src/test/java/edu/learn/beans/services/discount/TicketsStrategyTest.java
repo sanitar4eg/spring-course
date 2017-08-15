@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 2:16 AM
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class, TestStrategiesConfiguration.class})
 public class TicketsStrategyTest {

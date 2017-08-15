@@ -9,9 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 20/2/16 Time: 9:03 PM
- */
 @Entity
 public class Booking {
 

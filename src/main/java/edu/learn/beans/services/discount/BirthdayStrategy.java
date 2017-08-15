@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/4/2016 Time: 11:25 AM
- */
 @Component("birthdayStrategy")
 @PropertySource({"classpath:strategies/strategies.properties"})
 public class BirthdayStrategy implements DiscountStrategy {

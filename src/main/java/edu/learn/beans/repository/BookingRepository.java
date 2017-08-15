@@ -9,9 +9,6 @@ import java.util.Objects;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/4/2016 Time: 10:21 AM
- */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 

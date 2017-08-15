@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 13/2/16 Time: 6:10 PM
- */
 @Configuration
 public class TestEventServiceConfiguration extends TestAuditoriumConfiguration {
 
