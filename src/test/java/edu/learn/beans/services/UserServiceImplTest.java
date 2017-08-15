@@ -1,24 +1,20 @@
 package edu.learn.beans.services;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import edu.learn.beans.configuration.AppConfiguration;
+import edu.learn.beans.TestConfiguration;
 import edu.learn.beans.configuration.TestUserServiceConfiguration;
-import edu.learn.beans.configuration.db.DataSourceConfiguration;
-import edu.learn.beans.configuration.db.DbSessionFactory;
-import edu.learn.beans.daos.mocks.UserDAOMock;
 import edu.learn.beans.models.User;
+import edu.learn.beans.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 8:02 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfiguration.class, DataSourceConfiguration.class, DbSessionFactory.class,
-	TestUserServiceConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class, TestUserServiceConfiguration.class})
 @Transactional
 public class UserServiceImplTest {
 
@@ -37,20 +32,14 @@ public class UserServiceImplTest {
 	private ConfigurableApplicationContext applicationContext;
 
 	@Autowired
-	@Value("#{testUserServiceImpl}")
 	private UserService userService;
 
 	@Autowired
-	private UserDAOMock userDAOMock;
-
-	@Before
-	public void init() {
-		userDAOMock.init();
-	}
+	private UserRepository userRepository;
 
 	@After
 	public void cleanup() {
-		userDAOMock.cleanup();
+		userRepository.deleteAll();
 	}
 
 	@Test

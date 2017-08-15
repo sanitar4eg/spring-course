@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DiscountServiceImpl implements DiscountService {
 
-	public static final double MAX_DISCOUNT = 0.8;
+	private static final double MAX_DISCOUNT = 0.8;
 
 	private final List<DiscountStrategy> strategies;
 
@@ -28,8 +28,10 @@ public class DiscountServiceImpl implements DiscountService {
 
 	@Override
 	public double getDiscount(User user, Event event) {
-		final Double discount = strategies.stream().map(strategy -> strategy.calculateDiscount(user)).reduce(
-			(a, b) -> a + b).orElse(0.0);
+		final Double discount = strategies.stream()
+			.map(strategy -> strategy.calculateDiscount(user))
+			.reduce((a, b) -> a + b)
+			.orElse(0.0);
 		return Double.compare(discount, MAX_DISCOUNT) > 0 ? MAX_DISCOUNT : discount;
 	}
 }

@@ -1,36 +1,46 @@
 package edu.learn.beans.models;
 
+import java.util.Objects;
+import java.util.Optional;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 20/2/16 Time: 9:03 PM
  */
+@Entity
 public class Booking {
 
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
+	@ManyToOne(fetch = FetchType.EAGER)
 	private User user;
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Ticket ticket;
 
 	public Booking() {
 	}
 
 	public Booking(User user, Ticket ticket) {
-		this(-1, user, ticket);
+		this(null, user, ticket);
 	}
 
-	public Booking(long id, User user, Ticket ticket) {
+	public Booking(Long id, User user, Ticket ticket) {
 		this.id = id;
 		this.user = user;
 		this.ticket = ticket;
 	}
 
-	public Booking withId(long id) {
-		return new Booking(id, user, ticket);
-	}
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -61,7 +71,7 @@ public class Booking {
 
 		Booking booking = (Booking) o;
 
-		if (id != booking.id) {
+		if (!Objects.equals(id, booking.id)) {
 			return false;
 		}
 		if (user != null ? !user.equals(booking.user) : booking.user != null) {
@@ -73,6 +83,7 @@ public class Booking {
 
 	@Override
 	public int hashCode() {
+		long id = Optional.ofNullable(getId()).orElse(-1L);
 		int result = (int) (id ^ (id >>> 32));
 		result = 31 * result + (user != null ? user.hashCode() : 0);
 		result = 31 * result + (ticket != null ? ticket.hashCode() : 0);

@@ -1,17 +1,16 @@
 package edu.learn.beans.aspects;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
+import edu.learn.beans.TestConfiguration;
 import edu.learn.beans.aspects.mocks.LuckyWinnerAspectMock;
-import edu.learn.beans.configuration.AppConfiguration;
-import edu.learn.beans.configuration.db.DataSourceConfiguration;
-import edu.learn.beans.configuration.db.DbSessionFactory;
-import edu.learn.beans.daos.mocks.BookingDAOBookingMock;
-import edu.learn.beans.daos.mocks.DBAuditoriumDAOMock;
-import edu.learn.beans.daos.mocks.EventDAOMock;
-import edu.learn.beans.daos.mocks.UserDAOMock;
+import edu.learn.beans.configuration.TestAspectsConfiguration;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.repository.AuditoriumRepository;
+import edu.learn.beans.repository.BookingRepository;
+import edu.learn.beans.repository.EventRepository;
+import edu.learn.beans.repository.UserRepository;
 import edu.learn.beans.services.BookingService;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -30,8 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 13/2/16 Time: 7:20 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfiguration.class, DataSourceConfiguration.class, DbSessionFactory.class,
-	edu.learn.beans.configuration.TestAspectsConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class, TestAspectsConfiguration.class})
 @Transactional
 public class TestLuckyWinnerAspect {
 
@@ -42,36 +40,29 @@ public class TestLuckyWinnerAspect {
 	private BookingService bookingService;
 
 	@Autowired
-	private BookingDAOBookingMock bookingDAOBookingMock;
+	private BookingRepository bookingRepository;
 
 	@Autowired
-	private EventDAOMock eventDAOMock;
+	private EventRepository eventRepository;
 
 	@Autowired
-	private UserDAOMock userDAOMock;
+	private UserRepository userRepository;
 
 	@Autowired
-	private LuckyWinnerAspectMock luckyWinnerAspectMock;
-
-	@Autowired
-	private DBAuditoriumDAOMock auditoriumDAOMock;
+	private AuditoriumRepository auditoriumRepository;
 
 	@Before
 	public void init() {
 		LuckyWinnerAspectMock.cleanup();
-		auditoriumDAOMock.init();
-		userDAOMock.init();
-		eventDAOMock.init();
-		bookingDAOBookingMock.init();
 	}
 
 	@After
 	public void cleanup() {
 		LuckyWinnerAspectMock.cleanup();
-		auditoriumDAOMock.cleanup();
-		userDAOMock.cleanup();
-		eventDAOMock.cleanup();
-		bookingDAOBookingMock.cleanup();
+		auditoriumRepository.deleteAll();
+		userRepository.deleteAll();
+		eventRepository.deleteAll();
+		bookingRepository.deleteAll();
 	}
 
 	@Test

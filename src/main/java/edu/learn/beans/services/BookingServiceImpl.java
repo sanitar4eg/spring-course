@@ -1,20 +1,21 @@
 package edu.learn.beans.services;
 
-import edu.learn.beans.daos.BookingDAO;
 import edu.learn.beans.models.Auditorium;
+import edu.learn.beans.models.Booking;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.repository.BookingRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -30,22 +31,20 @@ public class BookingServiceImpl implements BookingService {
 
 	public static final Logger LOG = LoggerFactory.getLogger(BookingServiceImpl.class);
 
-	final int minSeatNumber;
-	final double vipSeatPriceMultiplier;
-	final double highRatedPriceMultiplier;
-	final double defaultRateMultiplier;
+	private final int minSeatNumber;
+	private final double vipSeatPriceMultiplier;
+	private final double highRatedPriceMultiplier;
+	private final double defaultRateMultiplier;
 	private final EventService eventService;
 	private final AuditoriumService auditoriumService;
 	private final UserService userService;
-	private final BookingDAO bookingDAO;
+	private final BookingRepository bookingRepository;
 	private final DiscountService discountService;
 
 	@Autowired
-	public BookingServiceImpl(@Qualifier("eventServiceImpl") EventService eventService,
-		@Qualifier("auditoriumServiceImpl") AuditoriumService auditoriumService,
-		@Qualifier("userServiceImpl") UserService userService,
-		@Qualifier("discountServiceImpl") DiscountService discountService,
-		@Qualifier("bookingDAO") BookingDAO bookingDAO,
+	public BookingServiceImpl(EventService eventService, AuditoriumService auditoriumService,
+		UserService userService, DiscountService discountService,
+		BookingRepository bookingRepository,
 		@Value("${min.seat.number}") int minSeatNumber,
 		@Value("${vip.seat.price.multiplier}") double vipSeatPriceMultiplier,
 		@Value("${high.rate.price.multiplier}") double highRatedPriceMultiplier,
@@ -53,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
 		this.eventService = eventService;
 		this.auditoriumService = auditoriumService;
 		this.userService = userService;
-		this.bookingDAO = bookingDAO;
+		this.bookingRepository = bookingRepository;
 		this.discountService = discountService;
 		this.minSeatNumber = minSeatNumber;
 		this.vipSeatPriceMultiplier = vipSeatPriceMultiplier;
@@ -140,13 +139,15 @@ public class BookingServiceImpl implements BookingService {
 			throw new IllegalStateException("User: [" + user + "] is not registered");
 		}
 
-		List<Ticket> bookedTickets = bookingDAO.getTickets(ticket.getEvent());
-		boolean seatsAreAlreadyBooked = bookedTickets.stream()
-			.filter(bookedTicket -> ticket.getSeatsList().stream().filter(
-				bookedTicket.getSeatsList()::contains).findAny().isPresent()).findAny().isPresent();
+		Stream<Ticket> bookedTickets = bookingsToTickets(bookingRepository.getAllByTicketEvent(ticket.getEvent()));
+		Ticket finalTicket = ticket;
+		boolean seatsAreAlreadyBooked = bookedTickets
+			.anyMatch(bookedTicket -> finalTicket.getSeatsList().stream().anyMatch(
+				bookedTicket.getSeatsList()::contains));
 
 		if (!seatsAreAlreadyBooked) {
-			bookingDAO.create(user, ticket);
+			ticket.setUser(user);
+			ticket = bookingRepository.save(new Booking(user, ticket)).getTicket();
 		} else {
 			throw new IllegalStateException("Unable to book ticket: [" + ticket + "]. Seats are already booked.");
 		}
@@ -158,6 +159,10 @@ public class BookingServiceImpl implements BookingService {
 	public List<Ticket> getTicketsForEvent(String event, String auditoriumName, LocalDateTime date) {
 		final Auditorium auditorium = auditoriumService.getByName(auditoriumName);
 		final Event foundEvent = eventService.getEvent(event, auditorium, date);
-		return bookingDAO.getTickets(foundEvent);
+		return bookingsToTickets(bookingRepository.getAllByTicketEvent(foundEvent)).collect(Collectors.toList());
+	}
+
+	private Stream<Ticket> bookingsToTickets(List<Booking> bookings) {
+		return bookings.stream().map(Booking::getTicket);
 	}
 }

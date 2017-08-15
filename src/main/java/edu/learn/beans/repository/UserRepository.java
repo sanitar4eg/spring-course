@@ -1,13 +1,13 @@
-package edu.learn.beans.daos;
+package edu.learn.beans.repository;
 
 import edu.learn.beans.models.User;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/2/2016 Time: 11:38 AM
- */
-public interface UserDAO {
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
 	static void validateUser(User user) {
 		if (Objects.isNull(user)) {
@@ -21,15 +21,7 @@ public interface UserDAO {
 		}
 	}
 
-	User create(User user);
-
-	void delete(User user);
-
-	User get(long id);
-
 	User getByEmail(String email);
 
 	List<User> getAllByName(String name);
-
-	List<User> getAll();
 }

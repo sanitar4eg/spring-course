@@ -13,7 +13,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 13/2/16 Time: 7:18 PM
  */
 @Configuration
-@EnableAspectJAutoProxy(proxyTargetClass = false)
+@EnableAspectJAutoProxy
 public class TestAspectsConfiguration extends TestBookingServiceConfiguration {
 
 	@Bean

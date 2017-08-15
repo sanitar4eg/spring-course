@@ -1,33 +1,50 @@
 package edu.learn.beans.models;
 
+import edu.learn.util.CsvUtil;
 import java.time.LocalDateTime;
 import java.util.List;
-import edu.learn.util.CsvUtil;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:37 PM
  */
+@Entity
 public class Ticket {
 
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "event_id")
 	private Event event;
 	private LocalDateTime dateTime;
 	private String seats;
+	@ManyToOne(fetch = FetchType.EAGER)
 	private User user;
 	private Double price;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "ticket")
+	private List<Booking> bookings;
 
 	public Ticket() {
 	}
 
 	public Ticket(Event event, LocalDateTime dateTime, List<Integer> seats, User user, double price) {
-		this(-1, event, dateTime, seats, user, price);
+		this(null, event, dateTime, seats, user, price);
 	}
 
-	public Ticket(long id, Event event, LocalDateTime dateTime, List<Integer> seats, User user, Double price) {
+	public Ticket(Long id, Event event, LocalDateTime dateTime, List<Integer> seats, User user, Double price) {
 		this(id, event, dateTime, CsvUtil.fromListToCsv(seats), user, price);
 	}
 
-	public Ticket(long id, Event event, LocalDateTime dateTime, String seats, User user, Double price) {
+	public Ticket(Long id, Event event, LocalDateTime dateTime, String seats, User user, Double price) {
 		this.id = id;
 		this.event = event;
 		this.dateTime = dateTime;
@@ -36,11 +53,11 @@ public class Ticket {
 		this.seats = seats;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -90,6 +107,10 @@ public class Ticket {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+
+	public List<Booking> getBookings() {
+		return bookings;
 	}
 
 	@Override

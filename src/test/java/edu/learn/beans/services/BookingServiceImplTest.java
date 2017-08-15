@@ -1,19 +1,17 @@
 package edu.learn.beans.services;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import edu.learn.beans.configuration.AppConfiguration;
+import edu.learn.beans.TestConfiguration;
 import edu.learn.beans.configuration.TestBookingServiceConfiguration;
-import edu.learn.beans.configuration.db.DataSourceConfiguration;
-import edu.learn.beans.configuration.db.DbSessionFactory;
-import edu.learn.beans.daos.mocks.BookingDAOBookingMock;
-import edu.learn.beans.daos.mocks.DBAuditoriumDAOMock;
-import edu.learn.beans.daos.mocks.EventDAOMock;
-import edu.learn.beans.daos.mocks.UserDAOMock;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.repository.AuditoriumRepository;
+import edu.learn.beans.repository.BookingRepository;
+import edu.learn.beans.repository.EventRepository;
+import edu.learn.beans.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -22,12 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -37,8 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 8:28 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfiguration.class, DataSourceConfiguration.class, DbSessionFactory.class,
-	TestBookingServiceConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class, TestBookingServiceConfiguration.class})
 @Transactional
 public class BookingServiceImplTest {
 
@@ -46,32 +40,23 @@ public class BookingServiceImplTest {
 	private ApplicationContext applicationContext;
 
 	@Autowired
-	@Value("#{testBookingServiceImpl}")
 	private BookingService bookingService;
 
 	@Autowired
-	private BookingDAOBookingMock bookingDAOBookingMock;
+	private BookingRepository bookingRepository;
 	@Autowired
-	private EventDAOMock eventDAOMock;
+	private EventRepository eventRepository;
 	@Autowired
-	private UserDAOMock userDAOMock;
+	private UserRepository userRepository;
 	@Autowired
-	private DBAuditoriumDAOMock auditoriumDAOMock;
-
-	@Before
-	public void init() {
-		auditoriumDAOMock.init();
-		userDAOMock.init();
-		eventDAOMock.init();
-		bookingDAOBookingMock.init();
-	}
+	private AuditoriumRepository auditoriumRepository;
 
 	@After
 	public void cleanup() {
-		auditoriumDAOMock.cleanup();
-		userDAOMock.cleanup();
-		eventDAOMock.cleanup();
-		bookingDAOBookingMock.cleanup();
+		bookingRepository.deleteAll();
+		eventRepository.deleteAll();
+		auditoriumRepository.deleteAll();
+		userRepository.deleteAll();
 	}
 
 	@Test
@@ -81,7 +66,7 @@ public class BookingServiceImplTest {
 		List<Ticket> ticketsForEvent = bookingService.getTicketsForEvent(testEvent1.getName(),
 			testEvent1.getAuditorium().getName(),
 			testEvent1.getDateTime());
-		assertEquals("Tickets should match", Arrays.asList(ticket), ticketsForEvent);
+		assertEquals("Tickets should match", Collections.singletonList(ticket), ticketsForEvent);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -130,24 +115,24 @@ public class BookingServiceImplTest {
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), ticket.getSeatsList(),
 			ticket.getUser());
-		Assert.assertEquals("Price is wrong", 297.6, ticketPrice, 0.00001);
+		assertEquals("Price is wrong", 297.6, ticketPrice, 0.00001);
 	}
 
 	@Test
 	public void testGetTicketPrice_WithoutDiscount() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket1");
-		User user = userDAOMock.create(new User("dadsada", "asdasda", LocalDate.now().minus(1, ChronoUnit.DAYS)));
+		User user = userRepository.save(new User("dadsada", "asdasda", LocalDate.now().minus(1, ChronoUnit.DAYS)));
 		Event event = ticket.getEvent();
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), ticket.getSeatsList(), user);
-		Assert.assertEquals("Price is wrong", 595.2, ticketPrice, 0.00001);
+		assertEquals("Price is wrong", 595.2, ticketPrice, 0.00001);
 	}
 
 	@Test
 	public void testGetTicketPrice_DiscountsForTicketsAndForBirthday() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket1");
 		User testUser = new User(UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDate.now());
-		User registeredUser = userDAOMock.create(testUser);
+		User registeredUser = userRepository.save(testUser);
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(1),
 				registeredUser, 0.0));
@@ -158,14 +143,14 @@ public class BookingServiceImplTest {
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), Arrays.asList(5, 6, 7, 8),
 			registeredUser);
-		Assert.assertEquals("Price is wrong", 260.4, ticketPrice, 0.00001);
+		assertEquals("Price is wrong", 260.4, ticketPrice, 0.00001);
 	}
 
 	@Test
 	public void testGetTicketPrice_DiscountsForTicketsAndForBirthday_MidRate() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket2");
 		User testUser = new User(UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDate.now());
-		User registeredUser = userDAOMock.create(testUser);
+		User registeredUser = userRepository.save(testUser);
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(3),
 				registeredUser, 0.0));
@@ -175,6 +160,6 @@ public class BookingServiceImplTest {
 		Event event = ticket.getEvent();
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), Arrays.asList(5, 6, 7), registeredUser);
-		Assert.assertEquals("Price is wrong", 525, ticketPrice, 0.00001);
+		assertEquals("Price is wrong", 525, ticketPrice, 0.00001);
 	}
 }

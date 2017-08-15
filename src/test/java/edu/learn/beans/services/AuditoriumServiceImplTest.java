@@ -1,19 +1,16 @@
 package edu.learn.beans.services;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import edu.learn.beans.configuration.AppConfiguration;
-import edu.learn.beans.configuration.db.DataSourceConfiguration;
-import edu.learn.beans.configuration.db.DbSessionFactory;
-import edu.learn.beans.daos.mocks.DBAuditoriumDAOMock;
+import edu.learn.beans.TestConfiguration;
+import edu.learn.beans.configuration.TestAuditoriumConfiguration;
 import edu.learn.beans.models.Auditorium;
+import edu.learn.beans.repository.AuditoriumRepository;
 import java.util.List;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,37 +19,31 @@ import org.springframework.transaction.annotation.Transactional;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 1:23 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfiguration.class, DataSourceConfiguration.class, DbSessionFactory.class,
-	edu.learn.beans.configuration.TestAuditoriumConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class, AuditoriumServiceImpl.class,
+	TestAuditoriumConfiguration.class})
 @Transactional
 public class AuditoriumServiceImplTest {
 
-	public static final int AUDITORIUMS_COUNT = 2;
+	private static final int AUDITORIUMS_COUNT = 3;
 	@Autowired
 	private AuditoriumService auditoriumService;
 	@Autowired
-	private ApplicationContext applicationContext;
+	private AuditoriumRepository auditoriumRepository;
 	@Autowired
-	private DBAuditoriumDAOMock auditoriumDAOMock;
-
 	private Auditorium testHall1;
+	@Autowired
 	private Auditorium testHall2;
-
-	@Before
-	public void init() {
-		auditoriumDAOMock.init();
-		testHall1 = (Auditorium) applicationContext.getBean("testHall1");
-		testHall2 = (Auditorium) applicationContext.getBean("testHall2");
-	}
 
 	@After
 	public void cleanup() {
-		auditoriumDAOMock.cleanup();
+		auditoriumRepository.deleteAll();
 	}
 
 	@Test
 	public void testGetAuditoriums() throws Exception {
 		List<Auditorium> auditoriums = auditoriumService.getAuditoriums();
+
+		System.out.println(auditoriums);
 		assertEquals("Auditoriums number should match", AUDITORIUMS_COUNT, auditoriums.size());
 	}
 

@@ -1,15 +1,19 @@
-package edu.learn.beans.daos;
+package edu.learn.beans.repository;
 
+import edu.learn.beans.models.Booking;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/4/2016 Time: 10:21 AM
  */
-public interface BookingDAO {
+@Repository
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 	static void validateUser(User user) {
 		if (Objects.isNull(user)) {
@@ -26,15 +30,7 @@ public interface BookingDAO {
 		}
 	}
 
-	Ticket create(User user, Ticket ticket);
+	List<Booking> getAllByTicketEvent(Event event);
 
-	void delete(User user, Ticket booking);
-
-	List<Ticket> getTickets(Event event);
-
-	List<Ticket> getTickets(User user);
-
-	long countTickets(User user);
-
-	List<Ticket> getAllTickets();
+	Long countByUser(User user);
 }

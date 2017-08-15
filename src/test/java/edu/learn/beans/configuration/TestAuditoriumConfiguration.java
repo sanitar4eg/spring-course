@@ -1,12 +1,10 @@
 package edu.learn.beans.configuration;
 
-import edu.learn.beans.daos.AuditoriumDAO;
-import edu.learn.beans.daos.mocks.DBAuditoriumDAOMock;
 import edu.learn.beans.models.Auditorium;
-import edu.learn.beans.services.AuditoriumService;
-import edu.learn.beans.services.AuditoriumServiceImpl;
+import edu.learn.beans.repository.AuditoriumRepository;
 import java.util.Arrays;
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,23 +14,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestAuditoriumConfiguration {
 
+	@Autowired
+	private AuditoriumRepository auditoriumRepository;
+
 	@Bean
 	public Auditorium testHall1() {
-		return new Auditorium(1, "Test auditorium", 15, Arrays.asList(1, 2, 3, 4, 5));
+		Auditorium auditorium = new Auditorium(1L, "Test auditorium", 15, Arrays.asList(1, 2, 3, 4, 5));
+		return auditoriumRepository.save(auditorium);
 	}
 
 	@Bean
 	public Auditorium testHall2() {
-		return new Auditorium(2, "Test auditorium 2", 8, Collections.singletonList(1));
-	}
-
-	@Bean
-	public AuditoriumDAO auditoriumDAOMock() {
-		return new DBAuditoriumDAOMock(Arrays.asList(testHall1(), testHall2()));
-	}
-
-	@Bean
-	public AuditoriumService auditoriumServiceImpl() {
-		return new AuditoriumServiceImpl(auditoriumDAOMock());
+		Auditorium auditorium = new Auditorium(2L, "Test auditorium 2", 8, Collections.singletonList(1));
+		return auditoriumRepository.save(auditorium);
 	}
 }

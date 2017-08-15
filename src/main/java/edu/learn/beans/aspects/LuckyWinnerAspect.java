@@ -2,11 +2,11 @@ package edu.learn.beans.aspects;
 
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,23 +33,24 @@ public class LuckyWinnerAspect {
 	}
 
 	public static List<String> getLuckyUsers() {
-		return luckyUsers.stream().collect(Collectors.toList());
+		return new ArrayList<>(luckyUsers);
 	}
 
-	@Pointcut("(execution(* edu.learn.beans.services.BookingService.bookTicket(edu.learn.beans.models.User, edu.learn.beans.models.Ticket)) && args(user, ticket))")
+	@Pointcut(value =
+		"(execution(* edu.learn.beans.services.BookingService.bookTicket(edu.learn.beans.models.User, edu.learn.beans.models.Ticket)) && args(user, ticket))", argNames = "user,ticket")
 	private void bookTicket(User user, Ticket ticket) {
 	}
 
-	@Around("bookTicket(user, ticket)")
-	public void countBookTicketByName(ProceedingJoinPoint joinPoint, User user, Ticket ticket) throws Throwable {
+	@Around(value = "bookTicket(user, ticket)", argNames = "joinPoint,user,ticket")
+	public Object countBookTicketByName(ProceedingJoinPoint joinPoint, User user, Ticket ticket) throws Throwable {
 		final int randomInt = ThreadLocalRandom.current().nextInt(100 - luckyPercentage + 1);
 		if (randomInt == 0) {
 			Ticket luckyTicket = new Ticket(ticket.getEvent(), ticket.getDateTime(), ticket.getSeatsList(),
 				ticket.getUser(), 0.0);
 			luckyUsers.add(user.getEmail());
-			joinPoint.proceed(new Object[]{user, luckyTicket});
+			return joinPoint.proceed(new Object[]{user, luckyTicket});
 		} else {
-			joinPoint.proceed();
+			return joinPoint.proceed();
 		}
 	}
 }

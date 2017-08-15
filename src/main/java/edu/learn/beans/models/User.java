@@ -5,23 +5,37 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.learn.util.LocalDateDeserializer;
 import edu.learn.util.LocalDateSerializer;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:35 PM
  */
+@Entity
 public class User {
 
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String email;
 	private String name;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
 	private LocalDate birthday;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	private List<Booking> bookings;
 
 	public User() {
 	}
 
-	public User(long id, String email, String name, LocalDate birthday) {
+	public User(Long id, String email, String name, LocalDate birthday) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
@@ -29,18 +43,14 @@ public class User {
 	}
 
 	public User(String email, String name, LocalDate birthday) {
-		this(-1, email, name, birthday);
+		this(null, email, name, birthday);
 	}
 
-	public User withId(long id) {
-		return new User(id, email, name, birthday);
-	}
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -68,6 +78,10 @@ public class User {
 		this.birthday = birthday;
 	}
 
+	public List<Booking> getBookings() {
+		return bookings;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -79,7 +93,7 @@ public class User {
 
 		User user = (User) o;
 
-		if (id != user.id) {
+		if (!Objects.equals(id, user.id)) {
 			return false;
 		}
 		if (email != null ? !email.equals(user.email) : user.email != null) {
@@ -94,6 +108,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
+		long id = Optional.ofNullable(getId()).orElse(-1L);
 		int result = (int) (id ^ (id >>> 32));
 		result = 31 * result + (email != null ? email.hashCode() : 0);
 		result = 31 * result + (name != null ? name.hashCode() : 0);
@@ -110,4 +125,10 @@ public class User {
 			", birthday=" + birthday +
 			'}';
 	}
+
+	public User withId(long registeredId) {
+		this.setId(registeredId);
+		return this;
+	}
+
 }

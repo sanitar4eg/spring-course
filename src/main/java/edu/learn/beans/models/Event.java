@@ -1,33 +1,53 @@
 package edu.learn.beans.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.learn.util.LocalDateTimeDeserializer;
 import edu.learn.util.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:42 PM
  */
+@Entity
 public class Event {
 
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String name;
+	@Enumerated
 	private Rate rate;
 	private double basePrice;
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime dateTime;
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Auditorium auditorium;
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, mappedBy = "event")
+	@JsonIgnore
+	private List<Ticket> tickets;
 
 	public Event() {
 	}
 
 	public Event(String name, Rate rate, double basePrice, LocalDateTime dateTime, Auditorium auditorium) {
-		this(-1, name, rate, basePrice, dateTime, auditorium);
+		this(null, name, rate, basePrice, dateTime, auditorium);
 	}
 
-	public Event(long id, String name, Rate rate, double basePrice, LocalDateTime dateTime, Auditorium auditorium) {
+	public Event(Long id, String name, Rate rate, double basePrice, LocalDateTime dateTime, Auditorium auditorium) {
 		this.id = id;
 		this.name = name;
 		this.rate = rate;
@@ -36,15 +56,11 @@ public class Event {
 		this.auditorium = auditorium;
 	}
 
-	public Event withId(Long eventId) {
-		return new Event(eventId, this.name, this.rate, this.basePrice, this.dateTime, this.auditorium);
-	}
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -88,6 +104,10 @@ public class Event {
 		this.auditorium = auditorium;
 	}
 
+	public List<Ticket> getTickets() {
+		return tickets;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -99,7 +119,7 @@ public class Event {
 
 		Event event = (Event) o;
 
-		if (id != event.id) {
+		if (!Objects.equals(id, event.id)) {
 			return false;
 		}
 		if (Double.compare(event.basePrice, basePrice) != 0) {
@@ -120,6 +140,7 @@ public class Event {
 
 	@Override
 	public int hashCode() {
+		long id = Optional.ofNullable(getId()).orElse(-1L);
 		int result;
 		long temp;
 		result = (int) (id ^ (id >>> 32));

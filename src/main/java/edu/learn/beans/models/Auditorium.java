@@ -1,14 +1,22 @@
 package edu.learn.beans.models;
 
-import java.util.List;
 import edu.learn.util.CsvUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/1/2016 Time: 7:55 PM
  */
+@Entity
 public class Auditorium {
 
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String name;
 	private int seatsNumber;
 	private String vipSeats;
@@ -17,29 +25,25 @@ public class Auditorium {
 	}
 
 	public Auditorium(String name, int seatsNumber, List<Integer> vipSeats) {
-		this(-1, name, seatsNumber, vipSeats);
+		this(null, name, seatsNumber, vipSeats);
 	}
 
-	public Auditorium(long id, String name, int seatsNumber, List<Integer> vipSeats) {
+	public Auditorium(Long id, String name, int seatsNumber, List<Integer> vipSeats) {
 		this(id, name, seatsNumber, CsvUtil.fromListToCsv(vipSeats));
 	}
 
-	public Auditorium(long id, String name, int seatsNumber, String vipSeats) {
+	public Auditorium(Long id, String name, int seatsNumber, String vipSeats) {
 		this.id = id;
 		this.name = name;
 		this.seatsNumber = seatsNumber;
 		this.vipSeats = vipSeats;
 	}
 
-	public Auditorium withId(Long id) {
-		return new Auditorium(id, name, seatsNumber, vipSeats);
-	}
-
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -86,7 +90,7 @@ public class Auditorium {
 
 		Auditorium that = (Auditorium) o;
 
-		if (id != that.id) {
+		if (!Objects.equals(id, that.id)) {
 			return false;
 		}
 		if (seatsNumber != that.seatsNumber) {
@@ -101,6 +105,7 @@ public class Auditorium {
 
 	@Override
 	public int hashCode() {
+		long id = Optional.ofNullable(getId()).orElse(-1L);
 		int result = (int) (id ^ (id >>> 32));
 		result = 31 * result + (name != null ? name.hashCode() : 0);
 		result = 31 * result + seatsNumber;

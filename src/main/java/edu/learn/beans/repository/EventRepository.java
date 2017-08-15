@@ -1,15 +1,18 @@
-package edu.learn.beans.daos;
+package edu.learn.beans.repository;
 
 import edu.learn.beans.models.Auditorium;
 import edu.learn.beans.models.Event;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 2/2/2016 Time: 12:35 PM
  */
-public interface EventDAO {
+@Repository
+public interface EventRepository extends JpaRepository<Event, Long> {
 
 	static void validateEvent(Event event) {
 		if (Objects.isNull(event)) {
@@ -23,23 +26,14 @@ public interface EventDAO {
 		}
 	}
 
-	Event create(Event event);
+	Event getByNameAndAuditoriumAndDateTime(String eventName, Auditorium auditorium, LocalDateTime dateTime);
 
-	Event update(Event event);
-
-	Event get(String eventName, Auditorium auditoriumName, LocalDateTime dateTime);
-
-	void delete(Event event);
+	Event findByAuditoriumAndDateTime(Auditorium auditorium, LocalDateTime dateTime);
 
 	List<Event> getByName(String name);
 
-	List<Event> getByNameAndDate(String name, LocalDateTime dateTime);
+	List<Event> getByDateTimeBetween(LocalDateTime start, LocalDateTime end);
 
-	List<Event> getAll();
+	List<Event> getByDateTimeAfter(LocalDateTime to);
 
-	List<Event> getForDateRange(LocalDateTime from, LocalDateTime to);
-
-	List<Event> getNext(LocalDateTime to);
-
-	List<Event> getByAuditoriumAndDate(Auditorium auditorium, LocalDateTime date);
 }

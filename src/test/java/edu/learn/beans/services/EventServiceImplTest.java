@@ -1,17 +1,18 @@
 package edu.learn.beans.services;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import edu.learn.beans.configuration.AppConfiguration;
+import edu.learn.beans.TestConfiguration;
+import edu.learn.beans.configuration.TestAuditoriumConfiguration;
 import edu.learn.beans.configuration.TestEventServiceConfiguration;
-import edu.learn.beans.configuration.db.DataSourceConfiguration;
-import edu.learn.beans.configuration.db.DbSessionFactory;
-import edu.learn.beans.daos.mocks.EventDAOMock;
 import edu.learn.beans.models.Auditorium;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
+import edu.learn.beans.repository.BookingRepository;
+import edu.learn.beans.repository.EventRepository;
+import edu.learn.beans.repository.TicketRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,15 +36,15 @@ import org.springframework.transaction.annotation.Transactional;
  * Created with IntelliJ IDEA. User: Dmytro_Babichev Date: 06/2/16 Time: 1:23 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfiguration.class, DataSourceConfiguration.class, DbSessionFactory.class,
-	TestEventServiceConfiguration.class})
+@ContextConfiguration(classes = {TestConfiguration.class,
+	TestAuditoriumConfiguration.class, TestEventServiceConfiguration.class})
 @Transactional
 public class EventServiceImplTest {
 
-	public static final Logger LOG = LoggerFactory.getLogger(EventServiceImplTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EventServiceImplTest.class);
 
-	private final Event testEvent = new Event(UUID.randomUUID().toString(), Rate.HIGH, 1321, LocalDateTime.now(),
-		null);
+	private final Event testEvent =
+		new Event(UUID.randomUUID().toString(), Rate.HIGH, 1321, LocalDateTime.now(), null);
 	@Autowired
 	@Value("#{testHall1}")
 	Auditorium auditorium;
@@ -53,24 +54,27 @@ public class EventServiceImplTest {
 	@Autowired
 	private ApplicationContext applicationContext;
 	@Autowired
-	@Value("#{testEventServiceImpl}")
 	private EventService eventService;
 	@Autowired
-	@Value("#{testEventDAOMock}")
-	private EventDAOMock eventDAOMock;
+	private EventRepository eventRepository;
+	@Autowired
+	private BookingRepository bookingRepository;
+	@Autowired
+	private TicketRepository ticketRepository;
 
 	@Before
 	public void init() {
 		LOG.info("!!!");
 		testEvent.setAuditorium(auditorium);
-		eventDAOMock.init();
 		LOG.info("$$$");
 	}
 
 	@After
 	public void clean() {
 		LOG.info("***");
-		eventDAOMock.cleanup();
+//		bookingRepository.deleteAll();
+//		ticketRepository.deleteAll();
+		eventRepository.deleteAll();
 		LOG.info("###");
 	}
 
@@ -134,13 +138,13 @@ public class EventServiceImplTest {
 		Event event1 = (Event) applicationContext.getBean("testEvent1");
 		Event foundEvent = getEvent(event1);
 		assertEquals("Events should match", event1.getAuditorium(), foundEvent.getAuditorium());
-		assertEquals("Events should match", event1.getBasePrice(), foundEvent.getBasePrice());
+		assertEquals("Events should match", event1.getBasePrice(), foundEvent.getBasePrice(), 0.001);
 		assertEquals("Events should match", event1.getDateTime(), foundEvent.getDateTime());
 		assertEquals("Events should match", event1.getRate(), foundEvent.getRate());
 		assertEquals("Events should match", event1.getName(), foundEvent.getName());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testGetEvent_Exception() throws Exception {
 		Auditorium auditorium = new Auditorium(UUID.randomUUID().toString(), 1231, Collections.emptyList());
 		Event event = eventService.getEvent(UUID.randomUUID().toString(), auditorium, LocalDateTime.now());

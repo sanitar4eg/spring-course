@@ -1,12 +1,12 @@
 package edu.learn.beans.services;
 
-import edu.learn.beans.daos.EventDAO;
 import edu.learn.beans.models.Auditorium;
 import edu.learn.beans.models.Event;
+import edu.learn.beans.repository.EventRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,44 +17,53 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class EventServiceImpl implements EventService {
 
-	private final EventDAO eventDAO;
+	private final EventRepository eventRepository;
 
 	@Autowired
-	public EventServiceImpl(@Qualifier("eventDAO") EventDAO eventDAO) {
-		this.eventDAO = eventDAO;
+	public EventServiceImpl(EventRepository eventRepository) {
+		this.eventRepository = eventRepository;
 	}
 
 	public Event create(Event event) {
-		return eventDAO.create(event);
+		Event existed = eventRepository
+			.findByAuditoriumAndDateTime(event.getAuditorium(), event.getDateTime());
+		if (Objects.nonNull(existed)) {
+			throw new IllegalStateException(String.format(
+				"Unable to store event: [%s]. Event with such auditorium: [%s] on date: [%s] is already created.",
+				event, event.getAuditorium(), event.getDateTime()));
+		}
+		return eventRepository.save(event);
 	}
 
+	@Transactional
 	public void remove(Event event) {
-		eventDAO.delete(event);
+		eventRepository.delete(event);
+		eventRepository.flush();
 	}
 
 	public List<Event> getByName(String name) {
-		return eventDAO.getByName(name);
+		return eventRepository.getByName(name);
 	}
 
 	public Event getEvent(String name, Auditorium auditorium, LocalDateTime dateTime) {
-		return eventDAO.get(name, auditorium, dateTime);
+		return eventRepository.getByNameAndAuditoriumAndDateTime(name, auditorium, dateTime);
 	}
 
 	public List<Event> getAll() {
-		return eventDAO.getAll();
+		return eventRepository.findAll();
 	}
 
 	public List<Event> getForDateRange(LocalDateTime from, LocalDateTime to) {
-		return eventDAO.getForDateRange(from, to);
+		return eventRepository.getByDateTimeBetween(from, to);
 	}
 
 	public List<Event> getNextEvents(LocalDateTime to) {
-		return eventDAO.getNext(to);
+		return eventRepository.getByDateTimeAfter(to);
 	}
 
 	public Event assignAuditorium(Event event, Auditorium auditorium, LocalDateTime date) {
 		final Event updatedEvent = new Event(event.getId(), event.getName(), event.getRate(), event.getBasePrice(),
 			date, auditorium);
-		return eventDAO.update(updatedEvent);
+		return eventRepository.save(updatedEvent);
 	}
 }

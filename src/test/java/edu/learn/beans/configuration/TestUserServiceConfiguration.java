@@ -1,10 +1,10 @@
 package edu.learn.beans.configuration;
 
-import edu.learn.beans.daos.mocks.UserDAOMock;
 import edu.learn.beans.models.User;
-import edu.learn.beans.services.UserService;
-import edu.learn.beans.services.UserServiceImpl;
+import edu.learn.beans.repository.UserRepository;
 import java.util.Arrays;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,23 +14,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestUserServiceConfiguration {
 
+	@Autowired
+	private UserRepository userRepository;
+
+	@PostConstruct
+	public void init() {
+		userRepository.save(Arrays.asList(testUser1(), testUser2()));
+	}
 	@Bean
 	public User testUser1() {
-		return new User(0, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
+		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
 	}
 
 	@Bean
 	public User testUser2() {
-		return new User(1, "laory@yandex.ru", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
-	}
-
-	@Bean
-	public UserDAOMock userDAO() {
-		return new UserDAOMock(Arrays.asList(testUser1(), testUser2()));
-	}
-
-	@Bean(name = "testUserServiceImpl")
-	public UserService userServiceImpl() {
-		return new UserServiceImpl(userDAO());
+		return new User(2L, "laory@yandex.ru", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
 	}
 }

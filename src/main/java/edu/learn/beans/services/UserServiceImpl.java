@@ -1,11 +1,11 @@
 package edu.learn.beans.services;
 
-import edu.learn.beans.daos.UserDAO;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.repository.UserRepository;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,31 +16,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-	private final UserDAO userDAO;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public UserServiceImpl(@Qualifier("userDAO") UserDAO userDAO) {
-		this.userDAO = userDAO;
+	public UserServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
 	public User register(User user) {
-		return userDAO.create(user);
+		if (Objects.nonNull(userRepository.getByEmail(user.getEmail()))) {
+			throw new IllegalStateException("User with same email exist in database");
+		}
+		return userRepository.save(user);
 	}
 
+	@Transactional
 	public void remove(User user) {
-		userDAO.delete(user);
+		user = userRepository.getByEmail(user.getEmail());
+		userRepository.delete(user);
+		userRepository.flush();
 	}
 
-	public User getById(long id) {
-		return userDAO.get(id);
+	public User getById(Long id) {
+		return userRepository.getOne(id);
 	}
 
 	public User getUserByEmail(String email) {
-		return userDAO.getByEmail(email);
+		return userRepository.getByEmail(email);
 	}
 
 	public List<User> getUsersByName(String name) {
-		return userDAO.getAllByName(name);
+		return userRepository.getAllByName(name);
 	}
 
 	public List<Ticket> getBookedTickets() {
