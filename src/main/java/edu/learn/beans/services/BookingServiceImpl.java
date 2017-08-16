@@ -159,6 +159,18 @@ public class BookingServiceImpl implements BookingService {
 		return bookingsToTickets(bookingRepository.getAllByTicketEvent(foundEvent)).collect(Collectors.toList());
 	}
 
+	@Override
+	public Ticket bookTicket(Long eventId, LocalDateTime time, List<Integer> seats) {
+		User user = userService.getCurrentUser();
+		Event event = eventService.getById(eventId);
+		double price = getTicketPrice(event.getName(), event.getAuditorium().getName(),
+			time, seats, user);
+
+		Ticket ticket = new Ticket(event, time, seats, user, price);
+
+		return bookTicket(user, ticket);
+	}
+
 	private Stream<Ticket> bookingsToTickets(List<Booking> bookings) {
 		return bookings.stream().map(Booking::getTicket);
 	}

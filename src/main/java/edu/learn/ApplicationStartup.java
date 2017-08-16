@@ -4,6 +4,7 @@ import edu.learn.beans.aspects.CounterAspect;
 import edu.learn.beans.aspects.DiscountAspect;
 import edu.learn.beans.aspects.LuckyWinnerAspect;
 import edu.learn.beans.models.Auditorium;
+import edu.learn.beans.models.Authority;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
 import edu.learn.beans.models.Ticket;
@@ -140,5 +141,15 @@ public class ApplicationStartup {
 		LOG.info("CounterAspect.getBookTicketByNameStat() = " + CounterAspect.getBookTicketByNameStat());
 		LOG.info("DiscountAspect.getDiscountStatistics() = " + DiscountAspect.getDiscountStatistics());
 		LOG.info("LuckyWinnerAspect.getLuckyUsers() = " + LuckyWinnerAspect.getLuckyUsers());
+
+		String test = "test";
+		User bookingManager = new User(test, test, test, LocalDate.now());
+		bookingManager.addAutority(Authority.BOOKING_MANAGER);
+		userService.register(bookingManager);
+
+		String book = "book";
+		User bookManager = new User(book, book, book, LocalDate.now());
+		bookManager.addAutority(Authority.BOOKING_MANAGER);
+		userService.register(bookManager);
 	}
 }

@@ -31,4 +31,9 @@ public class MainController {
 		}
 		return "redirect:/";
 	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(HttpServletRequest request, HttpServletResponse response) {
+		return "login";
+	}
 }

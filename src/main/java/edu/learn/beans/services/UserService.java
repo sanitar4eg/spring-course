@@ -18,4 +18,6 @@ public interface UserService extends UserDetailsService {
 	List<User> getUsersByName(String name);
 
 	List<Ticket> getBookedTickets();
+
+	User getCurrentUser();
 }

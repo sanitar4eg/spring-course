@@ -5,7 +5,11 @@ import edu.learn.beans.models.User;
 import edu.learn.beans.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -53,7 +57,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Object user = auth.getPrincipal();
+		if (Objects.nonNull(user) && user instanceof User) {
+			return (User) user;
+		} else {
+			throw new AccessDeniedException("User is not authenticated");
+		}
+	}
+
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.getByEmail(username);
+		return Optional.ofNullable(userRepository.getByEmail(username))
+			.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
 }

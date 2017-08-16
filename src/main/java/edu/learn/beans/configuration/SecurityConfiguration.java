@@ -1,5 +1,8 @@
 package edu.learn.beans.configuration;
 
+import static edu.learn.beans.models.Authority.BOOKING_MANAGER;
+import static edu.learn.beans.models.Authority.REGISTERED_USER;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,12 +19,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/").permitAll()
-			.anyRequest().authenticated()
-
-			.antMatchers("/view/**").access("hasRole('RESGISTERED_USER')")
+			.antMatchers("/booking/bookTicket").hasAuthority(BOOKING_MANAGER.toString())
+			.anyRequest().hasAuthority(REGISTERED_USER.toString())
 
 			.and()
 			.formLogin()
+			.loginPage("/login")
 			.permitAll();
 	}
 }

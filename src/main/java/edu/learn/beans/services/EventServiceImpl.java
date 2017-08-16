@@ -42,6 +42,11 @@ public class EventServiceImpl implements EventService {
 		return eventRepository.getByName(name);
 	}
 
+	@Override
+	public Event getById(Long id) {
+		return eventRepository.getOne(id);
+	}
+
 	public Event getEvent(String name, Auditorium auditorium, LocalDateTime dateTime) {
 		return eventRepository.getByNameAndAuditoriumAndDateTime(name, auditorium, dateTime);
 	}

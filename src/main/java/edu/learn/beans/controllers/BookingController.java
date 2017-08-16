@@ -39,11 +39,9 @@ public class BookingController {
 	}
 
 	@RequestMapping(value = "bookTicket", method = RequestMethod.GET)
-	public Ticket getTicketsForEvent(@RequestParam Long userId, @RequestParam Ticket ticket) {
-//		User user = userService.getById(userId);
-//		return bookingService.bookTicket(user, ticket);
-//		TODO: Can't get ticket by id
-		return null;
+	public Ticket getTicketsForEvent(@RequestParam Long eventId, @RequestParam LocalDateTime time,
+		@RequestParam List<Integer> seats) {
+		return bookingService.bookTicket(eventId, time, seats);
 	}
 
 }
