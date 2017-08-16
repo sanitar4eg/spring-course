@@ -3,8 +3,9 @@ package edu.learn.beans.services;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
 import java.util.List;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
 	User register(User user);
 

@@ -72,7 +72,8 @@ public class BookingServiceImplTest {
 		List<Ticket> before = bookingService.getTicketsForEvent(testEvent1.getName(),
 			testEvent1.getAuditorium().getName(),
 			testEvent1.getDateTime());
-		User newUser = new User(UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDate.now());
+		String random = UUID.randomUUID().toString();
+		User newUser = new User(random, random, random, LocalDate.now());
 		Ticket newTicket = new Ticket(testEvent1, LocalDateTime.now(), Arrays.asList(3, 4), newUser, 0.0);
 		bookingService.bookTicket(newUser, newTicket);
 	}
@@ -118,7 +119,8 @@ public class BookingServiceImplTest {
 	@Test
 	public void testGetTicketPrice_WithoutDiscount() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket1");
-		User user = userRepository.save(new User("dadsada", "asdasda", LocalDate.now().minus(1, ChronoUnit.DAYS)));
+		User user = userRepository
+			.save(new User("dadsada", "asdasda", "asdasda", LocalDate.now().minus(1, ChronoUnit.DAYS)));
 		Event event = ticket.getEvent();
 		double ticketPrice = bookingService.getTicketPrice(event.getName(), event.getAuditorium().getName(),
 			event.getDateTime(), ticket.getSeatsList(), user);
@@ -128,7 +130,8 @@ public class BookingServiceImplTest {
 	@Test
 	public void testGetTicketPrice_DiscountsForTicketsAndForBirthday() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket1");
-		User testUser = new User(UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDate.now());
+		String random = UUID.randomUUID().toString();
+		User testUser = new User(random, random, random, LocalDate.now());
 		User registeredUser = userRepository.save(testUser);
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(1),
@@ -146,7 +149,8 @@ public class BookingServiceImplTest {
 	@Test
 	public void testGetTicketPrice_DiscountsForTicketsAndForBirthday_MidRate() throws Exception {
 		Ticket ticket = (Ticket) applicationContext.getBean("testTicket2");
-		User testUser = new User(UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDate.now());
+		String random = UUID.randomUUID().toString();
+		User testUser = new User(random, random, random, LocalDate.now());
 		User registeredUser = userRepository.save(testUser);
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(3),

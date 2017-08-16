@@ -48,6 +48,12 @@
 <h1>Welcome!</h1>
 
 <p>
+	<a href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">Get as
+		PDF</a>
+	<a href="javascript:history.back()">Go Back</a>
+</p>
+
+<p>
 	We have these tickets for "${event.name}" in <a
 	href="/view/auditorium/${event.auditorium.name}">${event.auditorium.name}</a>:
 </p>
@@ -68,10 +74,6 @@
 		<div class="table-cell">${ticket.price}</div>
 	</div>
 </#list>
-
-<#--TODO: Add header with "Accept=application/pdf" to request-->
-<a href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">Get as PDF</a>
-
-<a href="javascript:history.back()">Go Back</a>
+	<div/>
 </body>
 </html>

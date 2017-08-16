@@ -10,9 +10,7 @@ import edu.learn.beans.configuration.TestEventServiceConfiguration;
 import edu.learn.beans.models.Auditorium;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
-import edu.learn.beans.repository.BookingRepository;
 import edu.learn.beans.repository.EventRepository;
-import edu.learn.beans.repository.TicketRepository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,10 +52,6 @@ public class EventServiceImplTest {
 	private EventService eventService;
 	@Autowired
 	private EventRepository eventRepository;
-	@Autowired
-	private BookingRepository bookingRepository;
-	@Autowired
-	private TicketRepository ticketRepository;
 
 	@Before
 	public void init() {

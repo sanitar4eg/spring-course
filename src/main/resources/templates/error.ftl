@@ -11,5 +11,9 @@
                     box-shadow: 5px 5px 32px rgba(0, 0, 0, 1);">
 	Something went wrong: ${message}
 </div>
+<br/>
+<div>
+	<a href="javascript:history.back()">Go Back</a>
+</div>
 </body>
 </html>

@@ -9,7 +9,6 @@ import edu.learn.beans.models.User;
 import edu.learn.beans.repository.AuditoriumRepository;
 import edu.learn.beans.repository.BookingRepository;
 import edu.learn.beans.repository.EventRepository;
-import edu.learn.beans.repository.TicketRepository;
 import edu.learn.beans.repository.UserRepository;
 import edu.learn.beans.services.AuditoriumService;
 import edu.learn.beans.services.BookingService;
@@ -40,8 +39,6 @@ public class TestBookingServiceConfiguration {
 	private UserRepository userRepository;
 	@Autowired
 	private AuditoriumRepository auditoriumRepository;
-	@Autowired
-	private TicketRepository ticketRepository;
 	@Autowired
 	private EventService eventService;
 	@Autowired
@@ -97,12 +94,13 @@ public class TestBookingServiceConfiguration {
 
 	@Bean
 	public User testUser1() {
-		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
+		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", "pass",
+			java.time.LocalDate.of(1992, 4, 29));
 	}
 
 	@Bean
 	public User testUser2() {
-		return new User(2L, "laory@yandex.ru", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
+		return new User(2L, "laory@yandex.ru", "Dmytro Babichev", "pass", java.time.LocalDate.of(1992, 4, 29));
 	}
 
 	@Bean

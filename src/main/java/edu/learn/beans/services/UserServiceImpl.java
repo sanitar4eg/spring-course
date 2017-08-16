@@ -6,6 +6,8 @@ import edu.learn.beans.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,5 +50,10 @@ public class UserServiceImpl implements UserService {
 
 	public List<Ticket> getBookedTickets() {
 		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return userRepository.getByEmail(username);
 	}
 }

@@ -1,46 +1,60 @@
 package edu.learn.beans.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.learn.util.LocalDateDeserializer;
 import edu.learn.util.LocalDateSerializer;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue
 	private Long id;
 	private String email;
 	private String name;
+	@JsonIgnore
+	private String password;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
 	private LocalDate birthday;
+	@ElementCollection(targetClass = Authority.class, fetch = FetchType.EAGER)
+	@Enumerated(value = EnumType.STRING)
+	private Set<Authority> authorities = new HashSet<>(Collections.singletonList(Authority.REGISTERED_USER));
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private List<Booking> bookings;
 
 	public User() {
 	}
 
-	public User(Long id, String email, String name, LocalDate birthday) {
+	public User(Long id, String email, String name, String password, LocalDate birthday) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
+		this.password = password;
 		this.birthday = birthday;
 	}
 
-	public User(String email, String name, LocalDate birthday) {
-		this(null, email, name, birthday);
+	public User(String email, String name, String password, LocalDate birthday) {
+		this(null, email, name, password, birthday);
 	}
 
 	public Long getId() {
@@ -77,6 +91,51 @@ public class User {
 
 	public List<Booking> getBookings() {
 		return bookings;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	public Set<Authority> getAuthorities() {
+		return authorities;
+	}
+
+	public void addAutority(Authority authority) {
+		authorities.add(authority);
+	}
+
+	public void removeAutority(Authority authority) {
+		authorities.remove(authority);
 	}
 
 	@Override
@@ -127,5 +186,4 @@ public class User {
 		this.setId(registeredId);
 		return this;
 	}
-
 }

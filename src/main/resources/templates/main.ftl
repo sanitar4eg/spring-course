@@ -5,5 +5,6 @@
 <p><a href="/upload">upload</a></p>
 <p><a href="/view/event">event</a></p>
 <p><a href="/view/auditorium">auditorium</a></p>
+<p><a href="/logout">logout</a></p>
 </body>
 </html>

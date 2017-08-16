@@ -27,5 +27,6 @@
 </table>
 
 
+<a href="javascript:history.back()">Go Back</a>
 </body>
 </html>

@@ -53,13 +53,14 @@ public class ApplicationStartup {
 		String name = "Dmytro Babichev";
 		String eventName = "The revenant";
 		String auditoriumName = "Blue hall";
+		String password = "pass";
 		Auditorium blueHall = auditoriumService.getByName(auditoriumName);
 		Auditorium yellowHall = auditoriumService.getByName("Yellow hall");
 		Auditorium redHall = auditoriumService.getByName("Red hall");
 		LocalDateTime dateOfEvent = LocalDateTime.of(LocalDate.of(2016, 2, 5), LocalTime.of(15, 45, 0));
 
-		userService.register(new User(email, name, LocalDate.now()));
-		userService.register(new User("laory@yandex.ru", name, LocalDate.of(1992, 4, 29)));
+		userService.register(new User(email, name, password, LocalDate.now()));
+		userService.register(new User("laory@yandex.ru", name, password, LocalDate.of(1992, 4, 29)));
 
 		User userByEmail = userService.getUserByEmail(email);
 		LOG.info("User with email: [" + email + "] is " + userByEmail);

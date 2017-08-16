@@ -27,7 +27,8 @@ public class TestStrategiesConfiguration {
 
 	@PostConstruct
 	public void init() {
-		userRepository.save(new User(USER_THAT_BOOKED_TICKET, USER_THAT_BOOKED_TICKET, LocalDate.now()));
+		userRepository
+			.save(new User(USER_THAT_BOOKED_TICKET, USER_THAT_BOOKED_TICKET, USER_THAT_BOOKED_TICKET, LocalDate.now()));
 	}
 
 	@Bean

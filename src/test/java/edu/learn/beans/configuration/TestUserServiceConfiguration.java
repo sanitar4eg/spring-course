@@ -18,13 +18,15 @@ public class TestUserServiceConfiguration {
 	public void init() {
 		userRepository.save(Arrays.asList(testUser1(), testUser2()));
 	}
+
 	@Bean
 	public User testUser1() {
-		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
+		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", "pass",
+			java.time.LocalDate.of(1992, 4, 29));
 	}
 
 	@Bean
 	public User testUser2() {
-		return new User(2L, "laory@yandex.ru", "Dmytro Babichev", java.time.LocalDate.of(1992, 4, 29));
+		return new User(2L, "laory@yandex.ru", "Dmytro Babichev", "pass", java.time.LocalDate.of(1992, 4, 29));
 	}
 }

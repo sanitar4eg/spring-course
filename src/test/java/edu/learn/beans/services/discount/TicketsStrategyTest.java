@@ -1,5 +1,6 @@
 package edu.learn.beans.services.discount;
 
+import static edu.learn.beans.configuration.TestStrategiesConfiguration.USER_THAT_BOOKED_TICKET;
 import static org.junit.Assert.assertEquals;
 
 import edu.learn.beans.TestConfiguration;
@@ -34,7 +35,7 @@ public class TicketsStrategyTest {
 	public void testCalculateDiscount_UserHasDiscount() throws Exception {
 		LOG.info(strategy.getClass().getName());
 		User userWithDiscount =
-			new User("test@ema.il", TestStrategiesConfiguration.USER_THAT_BOOKED_TICKET, LocalDate.now());
+			new User("test@ema.il", USER_THAT_BOOKED_TICKET, USER_THAT_BOOKED_TICKET, LocalDate.now());
 		userWithDiscount = userRepository.save(userWithDiscount);
 		double discount = strategy.calculateDiscount(userWithDiscount);
 		assertEquals("User: [" + userWithDiscount + "] has tickets discount", strategy.ticketsDiscountValue, discount,
@@ -43,7 +44,8 @@ public class TicketsStrategyTest {
 
 	@Test
 	public void testCalculateDiscount_UserHasNoDiscount() throws Exception {
-		User userWithoutDiscount = new User("test@ema.il", "Test Name 2", LocalDate.now().minus(1, ChronoUnit.DAYS));
+		LocalDate minus = LocalDate.now().minus(1, ChronoUnit.DAYS);
+		User userWithoutDiscount = new User("test@ema.il", "Test Name 2", "password", minus);
 		userWithoutDiscount = userRepository.save(userWithoutDiscount);
 		double discount = strategy.calculateDiscount(userWithoutDiscount);
 		assertEquals("User: [" + userWithoutDiscount + "] doesn't have tickets discount", strategy.defaultDiscount,
