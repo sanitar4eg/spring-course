@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.learn.util.LocalDateTimeDeserializer;
 import edu.learn.util.LocalDateTimeSerializer;
+import edu.learn.util.LocalDateTimeXmlAdapter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +18,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Event {
 
 	@Id
@@ -30,11 +39,14 @@ public class Event {
 	private double basePrice;
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeXmlAdapter.class)
+	@XmlSchemaType(type = LocalDateTime.class, name = "dateTime")
 	private LocalDateTime dateTime;
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Auditorium auditorium;
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, mappedBy = "event")
 	@JsonIgnore
+	@XmlTransient
 	private List<Ticket> tickets;
 	private Long ticketPrice;
 

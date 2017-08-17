@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+	<xs:element name="event" type="event"/>
+
+	<xs:element name="user" type="user"/>
+
+	<xs:complexType name="event">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="id" type="xs:long"/>
+			<xs:element minOccurs="0" name="name" type="xs:string"/>
+			<xs:element minOccurs="0" name="rate" type="rate"/>
+			<xs:element name="basePrice" type="xs:double"/>
+			<xs:element minOccurs="0" name="dateTime" type="xs:dateTime"/>
+			<xs:element minOccurs="0" name="auditorium" type="auditorium"/>
+			<xs:element minOccurs="0" name="ticketPrice" type="xs:long"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="auditorium">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="id" type="xs:long"/>
+			<xs:element minOccurs="0" name="name" type="xs:string"/>
+			<xs:element name="seatsNumber" type="xs:int"/>
+			<xs:element minOccurs="0" name="vipSeats" type="xs:string"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="vipSeatsList" nillable="true" type="xs:int"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="user">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="id" type="xs:long"/>
+			<xs:element minOccurs="0" name="email" type="xs:string"/>
+			<xs:element minOccurs="0" name="name" type="xs:string"/>
+			<xs:element minOccurs="0" name="password" type="xs:string"/>
+			<xs:element minOccurs="0" name="birthday" type="xs:date"/>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="authorities" nillable="true" type="authority"/>
+			<xs:element minOccurs="0" name="userAccount" type="userAccount"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="userAccount">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="id" type="xs:long"/>
+			<xs:element minOccurs="0" name="money" type="xs:double"/>
+			<xs:element minOccurs="0" ref="user"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="rate">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LOW"/>
+			<xs:enumeration value="HIGH"/>
+			<xs:enumeration value="MID"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="authority">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="REGISTERED_USER"/>
+			<xs:enumeration value="BOOKING_MANAGER"/>
+			<xs:enumeration value="ANONYMOUS"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

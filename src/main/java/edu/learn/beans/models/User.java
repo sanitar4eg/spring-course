@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.learn.util.LocalDateDeserializer;
 import edu.learn.util.LocalDateSerializer;
+import edu.learn.util.LocalDateXmlAdapter;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,9 +23,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class User implements UserDetails {
 
 	@Id
@@ -36,11 +45,14 @@ public class User implements UserDetails {
 	private String password;
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
+	@XmlJavaTypeAdapter(type = LocalDate.class, value = LocalDateXmlAdapter.class)
+	@XmlSchemaType(type = LocalDate.class, name = "date")
 	private LocalDate birthday;
 	@ElementCollection(targetClass = Authority.class, fetch = FetchType.EAGER)
 	@Enumerated(value = EnumType.STRING)
 	private Set<Authority> authorities = new HashSet<>(Collections.singletonList(Authority.REGISTERED_USER));
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	@XmlTransient
 	private List<Booking> bookings;
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private UserAccount userAccount;
