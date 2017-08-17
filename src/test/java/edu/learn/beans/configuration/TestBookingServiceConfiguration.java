@@ -6,6 +6,7 @@ import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.models.UserAccount;
 import edu.learn.beans.repository.AuditoriumRepository;
 import edu.learn.beans.repository.BookingRepository;
 import edu.learn.beans.repository.EventRepository;
@@ -21,6 +22,7 @@ import edu.learn.beans.services.UserService;
 import edu.learn.beans.services.discount.BirthdayStrategy;
 import edu.learn.beans.services.discount.DiscountStrategy;
 import edu.learn.beans.services.discount.TicketsStrategy;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,8 +54,6 @@ public class TestBookingServiceConfiguration {
 	@PostConstruct
 	public void init() {
 		auditoriumRepository.save(Arrays.asList(testHall1(), testHall2()));
-
-		userRepository.save(testUser1());
 
 		eventRepository.save(Arrays.asList(testEvent1(), testEvent2()));
 
@@ -97,8 +97,10 @@ public class TestBookingServiceConfiguration {
 
 	@Bean
 	public User testUser1() {
-		return new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", "pass",
-			java.time.LocalDate.of(1992, 4, 29));
+		User user = userRepository.save(new User(1L, "dmitriy.vbabichev@gmail.com", "Dmytro Babichev", "pass",
+			LocalDate.of(1992, 4, 29)));
+		userAccountService.save(new UserAccount(user));
+		return user;
 	}
 
 	@Bean

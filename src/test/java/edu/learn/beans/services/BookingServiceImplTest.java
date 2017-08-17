@@ -8,9 +8,11 @@ import edu.learn.beans.configuration.TestBookingServiceConfiguration;
 import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.models.UserAccount;
 import edu.learn.beans.repository.AuditoriumRepository;
 import edu.learn.beans.repository.BookingRepository;
 import edu.learn.beans.repository.EventRepository;
+import edu.learn.beans.repository.UserAccountRepository;
 import edu.learn.beans.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +47,8 @@ public class BookingServiceImplTest {
 	private EventRepository eventRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserAccountRepository userAccountRepository;
 	@Autowired
 	private AuditoriumRepository auditoriumRepository;
 
@@ -133,6 +137,7 @@ public class BookingServiceImplTest {
 		String random = UUID.randomUUID().toString();
 		User testUser = new User(random, random, random, LocalDate.now());
 		User registeredUser = userRepository.save(testUser);
+		userAccountRepository.save(new UserAccount(registeredUser));
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(1),
 				registeredUser, 0.0));
@@ -152,6 +157,7 @@ public class BookingServiceImplTest {
 		String random = UUID.randomUUID().toString();
 		User testUser = new User(random, random, random, LocalDate.now());
 		User registeredUser = userRepository.save(testUser);
+		userAccountRepository.save(new UserAccount(registeredUser));
 		bookingService.bookTicket(registeredUser,
 			new Ticket(ticket.getEvent(), LocalDateTime.now(), Collections.singletonList(3),
 				registeredUser, 0.0));
