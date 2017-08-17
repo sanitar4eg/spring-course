@@ -13,6 +13,8 @@
 			<input id="username" name="username"/>
 			<label for="password">Password</label>
 			<input type="password" id="password" name="password"/>
+		<label for="remember-me">Remember Me: </label>
+		<input type="checkbox" id="remember-me" name="remember-me"/>
 			<div class="form-actions">
 				<button class="btn">Log in</button>
 			</div>
