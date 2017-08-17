@@ -1,79 +1,58 @@
 <html>
 <head>
 	<title>Welcome!</title>
-	<style>
-		body {
-			color: #444444;
-		}
-
-		a {
-			font-style: italic;
-			color: #43c543;
-		}
-
-		a:visited {
-			color: #002700;
-		}
-
-		.table {
-			border: 1px solid #736f6f;
-			margin: 20px;
-			min-width: 900px;
-		}
-
-		.table-content {
-			display: flex;
-			border-top: 1px solid #736f6f;
-		}
-
-		.table-header {
-			background-color: #69ce96;
-			display: flex;
-			font-weight: 700;
-		}
-
-		.table-cell {
-			flex: 1 0 0;
-			text-align: center;
-			padding: 10px;
-			border-right: 1px solid #736f6f;
-		}
-
-		.table-cell:last-child {
-			border: 0;
-		}
-	</style>
+	<link rel="stylesheet" href="/css/bootstrap-reboot.min.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Welcome!</h1>
-
-<p>
-	<a href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">Get as
-		PDF</a>
-	<a href="javascript:history.back()">Go Back</a>
-</p>
-
-<p>
-	We have these tickets for "${event.name}" in <a
-	href="/view/auditorium/${event.auditorium.name}">${event.auditorium.name}</a>:
-</p>
-<div class="table">
-	<div class="table-header">
-		<div class="table-cell">ID</div>
-		<div class="table-cell">Time</div>
-		<div class="table-cell">Seats</div>
-		<div class="table-cell">User email</div>
-		<div class="table-cell">Price</div>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1>
+				Welcome!
+			</h1>
+		</div>
 	</div>
-<#list tickets as ticket>
-	<div class="table-content">
-		<div class="table-cell">${ticket.id}</div>
-		<div class="table-cell">${ticket.dateTime}</div>
-		<div class="table-cell">${ticket.seats}</div>
-		<div class="table-cell">${ticket.user.email}</div>
-		<div class="table-cell">${ticket.price}</div>
+	<div class="row">
+		<div class="col">
+			<p>
+				<a class="btn btn-primary"
+				   href="/view/booking?event=${event.name}&auditorium=${event.auditorium.name}&date=${event.dateTime}">Get
+					as PDF</a>
+				<button class="btn btn-primary" onclick="history.back()">Go Back</button>
+			</p>
+		</div>
 	</div>
-</#list>
-	<div/>
+	<div class="row">
+		<div class="col">
+			<p>We have these tickets for "${event.name}" in <a
+				href="/view/auditorium/${event.auditorium.name}">${event.auditorium.name}</a>:</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-bordered table-hover table-sm">
+				<thead class="thead-default">
+				<tr>
+					<th>ID</th>
+					<th>Time</th>
+					<th>Seats</th>
+					<th>User email</th>
+					<th>Price</th>
+				</tr>
+				</thead>
+						<#list tickets as ticket>
+			<tr>
+				<td>${ticket.id}
+				<td>${ticket.dateTime}</td>
+				<td>${ticket.seats}</td>
+				<td>${ticket.user.email}</td>
+				<td>${ticket.price}</td>
+						</#list>
+			</tr>
+			</table>
+		</div>
+	</div>
+</div>
 </body>
 </html>

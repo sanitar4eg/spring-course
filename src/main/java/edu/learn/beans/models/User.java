@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -41,6 +42,8 @@ public class User implements UserDetails {
 	private Set<Authority> authorities = new HashSet<>(Collections.singletonList(Authority.REGISTERED_USER));
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private List<Booking> bookings;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	private UserAccount userAccount;
 
 	public User() {
 	}
@@ -99,6 +102,10 @@ public class User implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public UserAccount getUserAccount() {
+		return userAccount;
 	}
 
 	@Override
