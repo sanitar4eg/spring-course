@@ -16,6 +16,7 @@ import edu.learn.beans.services.BookingServiceImpl;
 import edu.learn.beans.services.DiscountService;
 import edu.learn.beans.services.DiscountServiceImpl;
 import edu.learn.beans.services.EventService;
+import edu.learn.beans.services.UserAccountService;
 import edu.learn.beans.services.UserService;
 import edu.learn.beans.services.discount.BirthdayStrategy;
 import edu.learn.beans.services.discount.DiscountStrategy;
@@ -45,6 +46,8 @@ public class TestBookingServiceConfiguration {
 	private AuditoriumService auditoriumService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private UserAccountService userAccountService;
 
 	@PostConstruct
 	public void init() {
@@ -61,7 +64,7 @@ public class TestBookingServiceConfiguration {
 	@Bean
 	public BookingService bookingServiceImpl() {
 		return new BookingServiceImpl(eventService, auditoriumService, userService,
-			discountService(), bookingRepository, 1, 2, 1.2, 1);
+			discountService(), bookingRepository, 1, userAccountService, 2, 1.2, 1);
 	}
 
 	@Bean

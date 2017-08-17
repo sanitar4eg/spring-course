@@ -36,6 +36,7 @@ public class Event {
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, mappedBy = "event")
 	@JsonIgnore
 	private List<Ticket> tickets;
+	private Long ticketPrice;
 
 	public Event() {
 	}
@@ -103,6 +104,14 @@ public class Event {
 
 	public List<Ticket> getTickets() {
 		return tickets;
+	}
+
+	public Long getTicketPrice() {
+		return ticketPrice;
+	}
+
+	public void setTicketPrice(Long ticketPrice) {
+		this.ticketPrice = ticketPrice;
 	}
 
 	@Override

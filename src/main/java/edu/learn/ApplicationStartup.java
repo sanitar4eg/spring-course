@@ -13,6 +13,7 @@ import edu.learn.beans.services.AuditoriumService;
 import edu.learn.beans.services.BookingService;
 import edu.learn.beans.services.DiscountService;
 import edu.learn.beans.services.EventService;
+import edu.learn.beans.services.UserAccountService;
 import edu.learn.beans.services.UserService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,15 +36,18 @@ public class ApplicationStartup {
 	private final BookingService bookingService;
 	private final EventService eventService;
 	private final UserService userService;
+	private final UserAccountService userAccountService;
 	private final DiscountService discountService;
 
 	@Autowired
 	public ApplicationStartup(AuditoriumService auditoriumService, BookingService bookingService,
-		EventService eventService, UserService userService, DiscountService discountService) {
+		EventService eventService, UserService userService,
+		UserAccountService userAccountService, DiscountService discountService) {
 		this.auditoriumService = auditoriumService;
 		this.bookingService = bookingService;
 		this.eventService = eventService;
 		this.userService = userService;
+		this.userAccountService = userAccountService;
 		this.discountService = discountService;
 	}
 
@@ -64,6 +68,7 @@ public class ApplicationStartup {
 		userService.register(new User("laory@yandex.ru", name, password, LocalDate.of(1992, 4, 29)));
 
 		User userByEmail = userService.getUserByEmail(email);
+		userAccountService.addMoney(userByEmail, 5000d);
 		LOG.info("User with email: [" + email + "] is " + userByEmail);
 
 		LOG.info("All users with name: [" + name + "] are: ");

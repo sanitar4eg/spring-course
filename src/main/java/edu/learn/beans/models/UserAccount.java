@@ -18,4 +18,34 @@ public class UserAccount {
 	@OneToOne(fetch = FetchType.EAGER)
 	private User user;
 
+	public UserAccount() {
+	}
+
+	public UserAccount(User user) {
+		this.user = user;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Double getMoney() {
+		return money;
+	}
+
+	public void setMoney(Double money) {
+		this.money = money;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

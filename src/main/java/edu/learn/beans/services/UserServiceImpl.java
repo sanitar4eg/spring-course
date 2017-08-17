@@ -2,6 +2,7 @@ package edu.learn.beans.services;
 
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.models.UserAccount;
 import edu.learn.beans.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
@@ -22,12 +23,14 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final UserAccountService userAccountService;
 
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository,
-		PasswordEncoder passwordEncoder) {
+		PasswordEncoder passwordEncoder, UserAccountService userAccountService) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.userAccountService = userAccountService;
 	}
 
 	public User register(User user) {
@@ -35,7 +38,9 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalStateException("User with same email exist in database");
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userRepository.save(user);
+		user = userRepository.save(user);
+		userAccountService.save(new UserAccount(user));
+		return user;
 	}
 
 	@Transactional

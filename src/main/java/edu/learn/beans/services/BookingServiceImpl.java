@@ -6,6 +6,7 @@ import edu.learn.beans.models.Event;
 import edu.learn.beans.models.Rate;
 import edu.learn.beans.models.Ticket;
 import edu.learn.beans.models.User;
+import edu.learn.beans.models.UserAccount;
 import edu.learn.beans.repository.BookingRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,12 +38,14 @@ public class BookingServiceImpl implements BookingService {
 	private final UserService userService;
 	private final BookingRepository bookingRepository;
 	private final DiscountService discountService;
+	private final UserAccountService userAccountService;
 
 	@Autowired
 	public BookingServiceImpl(EventService eventService, AuditoriumService auditoriumService,
 		UserService userService, DiscountService discountService,
 		BookingRepository bookingRepository,
 		@Value("${min.seat.number}") int minSeatNumber,
+		UserAccountService userAccountService,
 		@Value("${vip.seat.price.multiplier}") double vipSeatPriceMultiplier,
 		@Value("${high.rate.price.multiplier}") double highRatedPriceMultiplier,
 		@Value("${def.rate.price.multiplier}") double defaultRateMultiplier) {
@@ -55,6 +58,7 @@ public class BookingServiceImpl implements BookingService {
 		this.vipSeatPriceMultiplier = vipSeatPriceMultiplier;
 		this.highRatedPriceMultiplier = highRatedPriceMultiplier;
 		this.defaultRateMultiplier = defaultRateMultiplier;
+		this.userAccountService = userAccountService;
 	}
 
 	@Override
@@ -135,6 +139,7 @@ public class BookingServiceImpl implements BookingService {
 		if (Objects.isNull(foundUser)) {
 			throw new IllegalStateException("User: [" + user + "] is not registered");
 		}
+		UserAccount account = userAccountService.findByUser(user);
 
 		Stream<Ticket> bookedTickets = bookingsToTickets(bookingRepository.getAllByTicketEvent(ticket.getEvent()));
 		Ticket finalTicket = ticket;
@@ -143,6 +148,15 @@ public class BookingServiceImpl implements BookingService {
 				bookedTicket.getSeatsList()::contains));
 
 		if (!seatsAreAlreadyBooked) {
+			Double money = account.getMoney();
+			Double rest = money - ticket.getPrice();
+			if (rest < 0) {
+				String message = String.format("User %s have't enough money %s for ticket price %s",
+					user.getEmail(), account.getMoney(), ticket.getPrice());
+				throw new IllegalStateException(message);
+			}
+			account.setMoney(rest);
+			userAccountService.save(account);
 			ticket.setUser(user);
 			ticket = bookingRepository.save(new Booking(user, ticket)).getTicket();
 		} else {
@@ -160,6 +174,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+	@Transactional
 	public Ticket bookTicket(Long eventId, LocalDateTime time, List<Integer> seats) {
 		User user = userService.getCurrentUser();
 		Event event = eventService.getById(eventId);
