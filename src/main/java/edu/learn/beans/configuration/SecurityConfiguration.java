@@ -42,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/").permitAll()
+			.antMatchers("/css/**").permitAll()
 			.antMatchers("/booking/bookTicket").hasAuthority(BOOKING_MANAGER.toString())
 			.anyRequest().hasAuthority(REGISTERED_USER.toString())
 
